@@ -1,0 +1,9 @@
+{
+  "name": "webdrive-docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "selenium-webdriver": "^4.3.1"
+  }
+}
