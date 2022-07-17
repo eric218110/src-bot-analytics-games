@@ -1,3 +1,10 @@
 export type MetricsLoad = {
-  handlerMetrics: () => Promise<void>
+  handlerMetrics: (props: MetricsLoad.Props) => Promise<void>
+}
+
+export namespace MetricsLoad {
+  export type Props = {
+    username: string
+    password: string
+  }
 }

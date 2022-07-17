@@ -16,7 +16,7 @@ WORKDIR $WORK_DIRECTORY
 
 ENV NODE_ENV=development NODE_PATH=$WORK_DIRECTORY
 ENV HEADLESS_BROSWER=true
-RUN npm install -g yarn
+RUN npm install -g yarn --force
 COPY package.json .
 RUN yarn install
 RUN yarn build

@@ -1,11 +1,11 @@
-import { MetricsLoad } from '@domain/useCases/metrics/load'
 import { WebDriverBroswer } from '@data/protocols/web/driver'
+import { ExecuteLogin } from '@domain/useCases/execute/login'
 import { By, Key } from 'selenium-webdriver'
 
-export class LoadMetricsInBroswer implements MetricsLoad {
+export class Login implements ExecuteLogin {
   constructor(private readonly webDriverBroswer: WebDriverBroswer) {}
 
-  public async handlerMetrics(props: MetricsLoad.Props): Promise<void> {
+  public async onLogin(props: ExecuteLogin.Props): ExecuteLogin.ReturnType {
     const { username, password } = props
     try {
       const urlLogin = 'https://blaze.com/pt/?modal=auth&tab=login'
@@ -19,12 +19,13 @@ export class LoadMetricsInBroswer implements MetricsLoad {
       await driver
         .findElement(By.xpath(`//input[@name='password']`))
         .sendKeys(password + Key.ENTER)
+      console.log('Login success')
     } catch (error) {
       console.error(error)
       await this.webDriverBroswer.onDestroyDriver()
       throw new Error(error)
     } finally {
-      // await this.webDriverBroswer.onDestroyDriver()
+      await this.webDriverBroswer.onDestroyDriver()
     }
   }
 }

@@ -1,9 +1,15 @@
-import { makeLoadMetricsInBroswer } from '@main/factories/data/makeLoadMetricsInBroswer'
+import { makeLogin } from '@main/factories/data/makeLogin'
 import { config } from 'dotenv'
 
 async function main() {
   config()
-  await makeLoadMetricsInBroswer().handlerMetrics()
+  const username = 'blazeappbottest1995@gmail.com'
+  const password = 'Wghd$85a'
+
+  await makeLogin().onLogin({
+    username,
+    password
+  })
 }
 
 main()
