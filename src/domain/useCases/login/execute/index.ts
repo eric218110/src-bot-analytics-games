@@ -8,5 +8,8 @@ export namespace ExecuteLogin {
     password: string
   }
 
-  export type ReturnType = Promise<void>
+  export type ReturnType = Promise<{
+    accessToken: string
+    expirationTime: string
+  }>
 }
