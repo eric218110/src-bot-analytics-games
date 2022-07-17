@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "es2019",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "rootDir": "src",
+    "baseUrl": "src",
+    "strict": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictNullChecks": true,
+    "paths": {
+      "@data/*": [
+        "./data/*"
+      ],
+      "@domain/*": [
+        "./domain/*"
+      ],
+      "@infra/*": [
+        "./infra/*"
+      ],
+      "@main/*": [
+        "./main/*"
+      ],
+      "@presentantion/*": [
+        "./presentation/*"
+      ]
+    }
+  }
+}
