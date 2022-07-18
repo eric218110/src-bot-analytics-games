@@ -14,6 +14,10 @@ export namespace ApiLoginProvider {
 
   export type ReturnType = {
     accessToken?: string
+    expirationTime?: {
+      iat: number
+      exp: number
+    }
     error?: ExceptionHandler
   }
 }

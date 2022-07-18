@@ -1,8 +1,12 @@
 import { HttpClient } from '@data/protocols/http/client'
 import { ApiLoginProvider } from '@domain/useCases/api/login/provider'
+import { DecodeBearerToken } from '@domain/useCases/security/token/decode'
 
 export class LoginWithApiMethod implements ApiLoginProvider {
-  constructor(private readonly httpClient: HttpClient) {}
+  constructor(
+    private readonly httpClient: HttpClient,
+    private readonly decodeBearerToken: DecodeBearerToken
+  ) {}
 
   public async onFetchLoginApi(
     body: ApiLoginProvider.Props
@@ -18,7 +22,17 @@ export class LoginWithApiMethod implements ApiLoginProvider {
     })
 
     if (data) {
-      return data
+      const { accessToken = '' } = data
+
+      const { exp, iat } = this.decodeBearerToken.onDecodeBearerToken<{
+        iat: number
+        exp: number
+      }>(accessToken)
+
+      return {
+        accessToken,
+        expirationTime: { exp, iat }
+      }
     }
     return {
       error
