@@ -18,9 +18,9 @@ async function main() {
     const btnText = await driver
       .findElement(By.name('btnI'))
       .getAttribute('value')
-    console.log(`Google button text: ${btnText}`)
+    console.info(`Google button text: ${btnText}`)
   } catch (e) {
-    console.log(e)
+    console.info(e)
   } finally {
     if (driver) {
       await driver.close() // helps chromedriver shut down cleanly and delete the "scoped_dir" temp directories that eventually fill up the harddrive.
