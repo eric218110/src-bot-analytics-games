@@ -1,7 +1,11 @@
 import { Controller } from '@domain/http/controller'
+import { MetricsLoad } from '@domain/useCases/metrics/load'
 
 export class MetricsLoadController implements Controller {
-  public handler(): Promise<any> {
-    return Promise.resolve({})
+  constructor(private readonly metricsLoad: MetricsLoad) {}
+
+  public handler(params: any): Promise<any> {
+    console.log(params.gameType)
+    return this.metricsLoad.handlerMetrics(params.gameType)
   }
 }

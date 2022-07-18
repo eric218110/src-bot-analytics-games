@@ -1,17 +1,22 @@
-import { config } from 'dotenv'
-import express from 'express'
 import { adapterRouter } from '@main/adapter/express/router'
 import { makeLoginApiController } from '@main/factories/presentation/controller/login/api'
+import { makeMetricsLoadController } from '@main/factories/presentation/controller/metrics/load'
+import { config } from 'dotenv'
+import express from 'express'
 
 async function main() {
   config()
-
-  const { PORT_APP = 1995 } = process.env
+  const { PORT_APP = 1995, ROUTER_APPLICATION_PREFIX: prefix = '' } =
+    process.env
 
   const app = express()
   app.use(express.json())
 
-  app.post('/login', adapterRouter(makeLoginApiController()))
+  app.post(`${prefix}login`, adapterRouter(makeLoginApiController()))
+  app.get(
+    `${prefix}analytics/:gameType`,
+    adapterRouter(makeMetricsLoadController())
+  )
 
   app.listen(PORT_APP, () => {
     console.info(`Server running in port: ${PORT_APP}`)
