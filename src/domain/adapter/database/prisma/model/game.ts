@@ -1,3 +1,3 @@
-import { Game } from '@prisma/client'
+import { GameCrash, GameDouble } from '@prisma/client'
 
-export type GameModel = Game
+export type GameModel = GameCrash | GameDouble

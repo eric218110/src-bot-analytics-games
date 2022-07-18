@@ -29,5 +29,13 @@
         "./presentation/*"
       ]
     }
-  }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "database"
+  ]
 }

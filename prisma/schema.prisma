@@ -10,13 +10,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Game {
+model GameDouble {
   id        Int      @id @default(autoincrement())
   color     String
   hex       String
-  gameType  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("games")
+  @@map("gameDouble")
+}
+
+model GameCrash {
+  id        Int      @id @default(autoincrement())
+  crashedIn String
+  hex       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("gameCrash")
 }
