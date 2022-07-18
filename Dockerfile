@@ -22,9 +22,9 @@ ENV PORT_APP=1996
 RUN npm install -g yarn --force
 
 COPY package.json .
+COPY . .
 RUN yarn install
 RUN yarn build
-COPY . .
 
 EXPOSE 1996
 
