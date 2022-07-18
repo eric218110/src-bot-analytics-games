@@ -10,7 +10,8 @@
     "lint-prettier": "prettier --write .",
     "prebuild": "rimraf dist",
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
-    "studio": "npx prisma studio"
+    "studio": "npx prisma studio",
+    "migrate:dev": "npx prisma migrate dev"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",
