@@ -1,3 +1,5 @@
+import { HttpRequest } from '@domain/http/request'
+
 export type Controller = {
-  handler: (body: any) => Promise<any>
+  handler: (params: HttpRequest) => Promise<any>
 }

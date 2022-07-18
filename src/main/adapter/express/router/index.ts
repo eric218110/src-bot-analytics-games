@@ -1,9 +1,10 @@
 import { Controller } from '@domain/http/controller'
+import { HttpRequest } from '@domain/http/request'
 import { Request, Response } from 'express'
 
 export const adapterRouter = (controller: Controller) => {
-  const result = async (request: Request, response: Response) => {
-    const httpRequest = {
+  return async (request: Request, response: Response) => {
+    const httpRequest: HttpRequest = {
       body: request.body,
       params: request.params
     }
@@ -19,5 +20,4 @@ export const adapterRouter = (controller: Controller) => {
 
     response.json(res).status(200)
   }
-  return result
 }
