@@ -1,33 +1,24 @@
 import { WebDriverBroswer } from '@data/protocols/web/driver'
-import { ExecuteLogin } from '@domain/useCases/login/execute'
-import { DecodeBearerToken } from '@domain/useCases/security/token/decode'
+import { ServerMetrics } from '@domain/useCases/bot/server/metrics'
 import { By, Key } from 'selenium-webdriver'
 
-export class Login implements ExecuteLogin {
-  constructor(
-    private readonly webDriverBroswer: WebDriverBroswer,
-    private readonly decodeBearerToken: DecodeBearerToken
-  ) {}
+export class BotServerMetrics implements ServerMetrics {
+  constructor(private readonly webDriverBroswer: WebDriverBroswer) {}
 
-  public async onLogin(props: ExecuteLogin.Props): ExecuteLogin.ReturnType {
-    const { username, password } = props
+  public async onStartServerMetrics(): Promise<void> {
     try {
       const urlLogin = 'https://blaze.com/pt/?modal=auth&tab=login'
+
       const driver = await this.webDriverBroswer.onCreateDriver()
 
       await driver.get(urlLogin)
 
       await driver
         .findElement(By.xpath(`//input[@name='username']`))
-        .sendKeys(username)
+        .sendKeys('username')
       await driver
         .findElement(By.xpath(`//input[@name='password']`))
-        .sendKeys(password + Key.ENTER)
-
-      return Promise.resolve({
-        accessToken: '',
-        expirationTime: ''
-      })
+        .sendKeys('password' + Key.ENTER)
     } catch (error) {
       console.error(error)
       await this.webDriverBroswer.onDestroyDriver()

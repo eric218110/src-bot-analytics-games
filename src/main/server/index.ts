@@ -1,4 +1,5 @@
 import { adapterRouter } from '@main/adapter/express/router'
+import { makeBotServer } from '@main/factories/data/bot/server/makeBotServer'
 import { makeLoginApiController } from '@main/factories/presentation/controller/login/api'
 import { makeMetricsLoadController } from '@main/factories/presentation/controller/metrics/load'
 import { config } from 'dotenv'
@@ -18,8 +19,9 @@ async function main() {
     adapterRouter(makeMetricsLoadController())
   )
 
-  app.listen(PORT_APP, () => {
+  app.listen(PORT_APP, async () => {
     console.info(`Server running in port: ${PORT_APP}`)
+    makeBotServer().onStartServerMetrics()
   })
 }
 
