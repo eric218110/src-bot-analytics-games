@@ -1,43 +1,25 @@
 import { WebDriverBroswer } from '@data/protocols/web/driver'
+import { GameAnalitcs } from '@domain/useCases/bot/analitcs/game'
 import { ServerMetrics } from '@domain/useCases/bot/server/metrics'
 import { By, Key } from 'selenium-webdriver'
 
 export class BotServerMetrics implements ServerMetrics {
-  constructor(private readonly webDriverBroswer: WebDriverBroswer) {}
+  constructor(
+    private readonly webDriverBroswer: WebDriverBroswer,
+    private readonly gameAnalitcs: GameAnalitcs
+  ) {}
 
   public async onStartServerMetrics(): Promise<void> {
     try {
       const { pages } = this.loadParams()
       const driver = await this.webDriverBroswer.onCreateDriver()
       await driver.get(pages.crash)
-      this.onAnalitcsResultsInGameCrash(driver)
+      this.gameAnalitcs.onAnalitcsGameByType({ driver, gameType: 'crash' })
     } catch (error) {
       console.error(error)
       await this.webDriverBroswer.onDestroyDriver()
       throw new Error(error)
     }
-  }
-
-  private async onAnalitcsResultsInGameCrash(driver: any) {
-    let items: Array<string> = []
-
-    setInterval(async () => {
-      const children = (await driver.executeScript(() => {
-        return document
-          .querySelector('.entries')
-          ?.textContent?.split('X')
-          .filter((x) => x !== '')
-      })) as Array<string>
-      if (children.length > items.length) {
-        items = children
-        const lastItemToAdd = await driver
-          .findElement(
-            By.xpath('//*[@id="crash-recent"]/div[2]/div[2]/span[1]')
-          )
-          .getText()
-        console.log(`Ultimo resultado ${lastItemToAdd}`)
-      }
-    }, 1000)
   }
 
   private async onLoginOnScrapingInputParams(driver: any) {
