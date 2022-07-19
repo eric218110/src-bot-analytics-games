@@ -1,4 +1,3 @@
-import { HttpClient } from '@data/protocols/http/client'
 import { WebDriverBroswer } from '@data/protocols/web/driver'
 import { ServerMetrics } from '@domain/useCases/bot/server/metrics'
 import { By, Key } from 'selenium-webdriver'
@@ -9,24 +8,37 @@ export class BotServerMetrics implements ServerMetrics {
   public async onStartServerMetrics(): Promise<void> {
     try {
       const { pages } = this.loadParams()
-
       const driver = await this.webDriverBroswer.onCreateDriver()
-      await driver.get(pages.login)
-      await this.onLoginOnScrapingInputParams(driver)
       await driver.get(pages.crash)
-      // setTimeout(() => {
-      //   driver.get(pages.crash)
-      // }, 2000)
+      this.onAnalitcsResultsInGameCrash(driver)
     } catch (error) {
-      // console.error(error)
-      // await this.webDriverBroswer.onDestroyDriver()
-      // throw new Error(error)
-    } finally {
-      // await this.webDriverBroswer.onDestroyDriver()
+      console.error(error)
+      await this.webDriverBroswer.onDestroyDriver()
+      throw new Error(error)
     }
   }
 
-  // private async onAnalitcsResultsInGameCrash() {}
+  private async onAnalitcsResultsInGameCrash(driver: any) {
+    let items: Array<string> = []
+
+    setInterval(async () => {
+      const children = (await driver.executeScript(() => {
+        return document
+          .querySelector('.entries')
+          ?.textContent?.split('X')
+          .filter((x) => x !== '')
+      })) as Array<string>
+      if (children.length > items.length) {
+        items = children
+        const lastItemToAdd = await driver
+          .findElement(
+            By.xpath('//*[@id="crash-recent"]/div[2]/div[2]/span[1]')
+          )
+          .getText()
+        console.log(`Ultimo resultado ${lastItemToAdd}`)
+      }
+    }, 1000)
+  }
 
   private async onLoginOnScrapingInputParams(driver: any) {
     const { username, password } = this.loadParams()
