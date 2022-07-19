@@ -1,6 +1,6 @@
 import { HttpClient } from '@data/protocols/http/client'
 import { ApiLoginProvider } from '@domain/useCases/api/login/provider'
-import { DecodeBearerToken } from '@domain/useCases/security/token/decode'
+import { DecodeBearerToken } from '@domain/useCases/api/security/token/decode'
 
 export class LoginWithApiMethod implements ApiLoginProvider {
   constructor(

@@ -1,4 +1,4 @@
-import { makeOnLoadMetrics } from '@main/factories/data/metrics/load/makeOnLoadMetrics'
+import { makeOnLoadMetrics } from '@main/factories/data/api/metrics/load/makeOnLoadMetrics'
 import { MetricsLoadController } from '@presentantion/controller/metrics/load'
 
 export const makeMetricsLoadController = () => {

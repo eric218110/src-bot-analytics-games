@@ -1,4 +1,4 @@
-import { makeApiLoginProvider } from '@main/factories/data/makeApiLoginProvider'
+import { makeApiLoginProvider } from '@main/factories/data/api/makeApiLoginProvider'
 import { LoginApiController } from '@presentantion/controller/login/api'
 
 export const makeLoginApiController = () => {

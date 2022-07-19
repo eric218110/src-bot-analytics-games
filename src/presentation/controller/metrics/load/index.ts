@@ -1,6 +1,6 @@
 import { Controller } from '@domain/http/controller'
 import { HttpRequest } from '@domain/http/request'
-import { MetricsLoad } from '@domain/useCases/metrics/load'
+import { MetricsLoad } from '@domain/useCases/api/metrics/load'
 
 export class MetricsLoadController implements Controller {
   constructor(private readonly metricsLoad: MetricsLoad) {}

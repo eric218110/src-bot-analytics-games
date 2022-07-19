@@ -1,4 +1,4 @@
-import { MetricsLoad } from '@domain/useCases/metrics/load'
+import { MetricsLoad } from '@domain/useCases/api/metrics/load'
 import { LoadMetricsGameCrashRepository } from '@data/protocols/repository/metrics/load/crash'
 import { LoadMetricsGameDoubleRepository } from '@data/protocols/repository/metrics/load/double'
 
