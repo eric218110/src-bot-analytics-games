@@ -27,6 +27,9 @@
       ],
       "@presentantion/*": [
         "./presentation/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
       ]
     }
   },

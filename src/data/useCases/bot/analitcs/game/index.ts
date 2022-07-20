@@ -1,7 +1,10 @@
 import { GameAnalitcs } from '@domain/useCases/bot/analitcs/game'
 import { By } from 'selenium-webdriver'
+import { SaveGameResult } from '@domain/useCases/bot/save/game/result'
 
 export class AnalitcsGame implements GameAnalitcs {
+  constructor(private readonly saveGameResult: SaveGameResult) {}
+
   public async onAnalitcsGameByType(props: GameAnalitcs.Props): Promise<void> {
     if (props.gameType === 'crash') {
       await this.onAnalitcsGameCrash(props.driver)
@@ -22,17 +25,18 @@ export class AnalitcsGame implements GameAnalitcs {
       })) as Array<string>
       if (children.length > lastNumberItem) {
         lastNumberItem = children.length
-        driver
+        const crashedIn: string = await driver
           .findElement(
             By.xpath('//*[@id="crash-recent"]/div[2]/div[2]/span[1]')
           )
           .getText()
-          .then((text = '') => console.log(`Ultimo resultado ${text}`))
+        this.saveGameResult.onSave({ crash: { crashedIn } })
       }
     }, 1000)
   }
 
   private async onAnalitcsGameDouble(driver: any) {
+    console.info(driver)
     throw new Error('Not implements method')
   }
 }
