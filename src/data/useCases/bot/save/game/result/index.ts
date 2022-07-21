@@ -14,7 +14,7 @@ export class ResultGameSaveInStorage implements SaveGameResult {
       const { crashedIn: crash = '' } = props.crash
       if (crash !== '') {
         const crashedIn = crash.replace('X', '')
-        const hex = Number(crashedIn) >= 2 ? colors.green : colors.dark
+        const hex = Number(crashedIn) >= 2 ? colors.green : colors.black
 
         await this.saveMetricsGameCrashRepository.onSaveMetricsCrash({
           crashedIn,
@@ -26,11 +26,14 @@ export class ResultGameSaveInStorage implements SaveGameResult {
     if (props.double) {
       const { color = '' } = props.double
       if (color !== '') {
-        const data = {
-          color,
-          hex: color
+        if (color === 'black' || color === 'red' || color === 'white') {
+          const hex = colors[color]
+          const data = {
+            color,
+            hex
+          }
+          await this.saveMetricsGameDoubleRepository.onSaveMetricsDouble(data)
         }
-        await this.saveMetricsGameDoubleRepository.onSaveMetricsDouble(data)
       }
     }
   }

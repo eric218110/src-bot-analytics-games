@@ -1,11 +1,16 @@
 import { Controller } from '@domain/http/controller'
-import { ServerMetrics } from '@domain/useCases/bot/server/metrics'
+import { ServerMetricsCrash } from '@domain/useCases/bot/server/metrics/crash'
+import { ServerMetricsDouble } from '@domain/useCases/bot/server/metrics/double'
 
 export class BotController implements Controller {
-  constructor(private readonly serverMetrics: ServerMetrics) {}
+  constructor(
+    private readonly serverMetricsCrash: ServerMetricsCrash,
+    private readonly serverMetricsDouble: ServerMetricsDouble
+  ) {}
 
   public async handler(): Promise<any> {
-    this.serverMetrics.onStartServerMetrics()
+    // this.serverMetricsCrash.onStartServerMetricsCrash()
+    this.serverMetricsDouble.onStartServerMetricsDouble()
     return {
       server: 'start'
     }

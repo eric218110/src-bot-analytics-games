@@ -1,6 +1,7 @@
 import { BotController } from '@presentantion/controller/metrics/bot'
-import { makeBotServer } from '@main/factories/data/bot/server/makeBotServer'
+import { makeBotServerCrash } from '@main/factories/data/bot/server/crash/makeBotServerCrash'
+import { makeBotServerDouble } from '@main/factories/data/bot/server/double/makeBotServerCrash'
 
 export const makeBotController = () => {
-  return new BotController(makeBotServer())
+  return new BotController(makeBotServerCrash(), makeBotServerDouble())
 }

@@ -36,7 +36,24 @@ export class AnalitcsGame implements GameAnalitcs {
   }
 
   private async onAnalitcsGameDouble(driver: any) {
-    console.info(driver)
-    throw new Error('Not implements method')
+    const keyPageCompleted = 'page complete'
+
+    setInterval(async () => {
+      const pageState: any = (await driver.executeScript(() => {
+        return document.querySelector('#roulette')?.classList.value ?? ''
+      })) as Array<string>
+
+      if (pageState === keyPageCompleted) {
+        const lastItem = await driver.executeScript(() => {
+          return document.querySelector(
+            '#roulette-recent > div > div.entries.main > div:nth-child(1) > div > div'
+          )?.classList
+        })
+
+        const [_, color] = lastItem
+
+        this.saveGameResult.onSave({ double: { color } })
+      }
+    }, 5000)
   }
 }
