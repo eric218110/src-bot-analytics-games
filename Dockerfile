@@ -15,17 +15,9 @@ RUN mkdir -p $WORK_DIRECTORY
 WORKDIR $WORK_DIRECTORY
 
 ENV NODE_ENV=development NODE_PATH=$WORK_DIRECTORY
-ENV HEADLESS_BROSWER=true
-ENV URL_LOGIN_API=https://blaze.com/api/auth/password
-ENV PORT_APP=1996
 
 RUN npm install -g yarn --force
 
 COPY package.json .
-COPY . .
+COPY . .  
 RUN yarn install
-RUN yarn build
-
-EXPOSE 1996
-
-CMD ["yarn", "start"]

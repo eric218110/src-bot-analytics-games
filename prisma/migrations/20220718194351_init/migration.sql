@@ -1,9 +1,0 @@
--- CreateTable
-CREATE TABLE "games" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "color" TEXT NOT NULL,
-    "hex" TEXT NOT NULL,
-    "gameType" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
-);

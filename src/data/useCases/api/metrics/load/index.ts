@@ -10,10 +10,10 @@ export class LoadMetrics implements MetricsLoad {
 
   public async handlerMetrics(gameType = ''): Promise<MetricsLoad.ReturnType> {
     if (gameType.toLocaleLowerCase() === 'double') {
-      return await this.loadMetricsGameDoubleRepository.onLoadMetricsDouble()
+      return this.loadMetricsGameDoubleRepository.onLoadMetricsDouble()
     }
     if (gameType.toLocaleLowerCase() === 'crash') {
-      return await this.loadMetricsGameCrashRepository.onLoadMetricsCrash()
+      return this.loadMetricsGameCrashRepository.onLoadMetricsCrash()
     }
     return {
       error: {

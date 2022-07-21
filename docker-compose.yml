@@ -1,8 +1,37 @@
 version: '3.0'
 services:
   application:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
+    container_name: bot-analytics-games
+    command: sh -c "yarn prisma generate && yarn migrate:deploy && yarn start"
     ports:
       - "8080:8080"
+      - "1995:1995"
+    volumes:
+      - .:/program
+    links:
+      - database
+    depends_on:
+      - database
+    environment:
+      - HEADLESS_BROSWER=true
+      - PORT_APP=1995
+      - DATABASE_URL=postgresql://postgres:docker@database:5432/postgres?schema=public
+      - ROUTER_APPLICATION_PREFIX=/api/v1/
+      - METRICS_PAGE_HOME=https://blaze.com/pt/
+      - METRICS_PAGE_CRASH=https://blaze.com/pt/games/crash
+      - METRICS_PAGE_DOUBLE=https://blaze.com/pt/games/double
+  database:
+    image: postgres:alpine
+    environment:
+      POSTGRES_PASSWORD: "docker"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/.volumes/postgres:/var/lib/postgresql/data
+    expose:
+      - 5432
+networks:
+  overlay:
+
+

@@ -1,7 +1,7 @@
 import { SaveMetricsGameDoubleRepository } from '@data/protocols/repository/metrics/save/double'
 import { SaveMetricsGameCrashRepository } from '@data/protocols/repository/metrics/save/crash'
 import { SaveGameResult } from '@domain/useCases/bot/save/game/result'
-import { colors } from 'utils/colors'
+import { colors } from '@utils/colors'
 
 export class ResultGameSaveInStorage implements SaveGameResult {
   constructor(
