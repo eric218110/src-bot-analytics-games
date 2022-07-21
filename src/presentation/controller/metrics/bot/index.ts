@@ -9,7 +9,7 @@ export class BotController implements Controller {
   ) {}
 
   public async handler(): Promise<any> {
-    // this.serverMetricsCrash.onStartServerMetricsCrash()
+    this.serverMetricsCrash.onStartServerMetricsCrash()
     this.serverMetricsDouble.onStartServerMetricsDouble()
     return {
       server: 'start'
