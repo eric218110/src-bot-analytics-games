@@ -1,0 +1,19 @@
+setup:
+  addons:
+    - plan: heroku-postgresql
+      as: DATABASE
+build:
+  docker:
+    web: Dockerfile
+  config:
+    NODE_ENV: production
+    HEADLESS_BROSWER: false
+    PORT_APP: 1996
+    URL_LOGIN_API: https://blaze.com/api/auth/password
+    ROUTER_APPLICATION_PREFIX: /api/v1/
+    METRICS_PAGE_HOME: https://blaze.com/pt/
+    METRICS_PAGE_CRASH: https://blaze.com/pt/games/crash
+    METRICS_PAGE_DOUBLE: https://blaze.com/pt/games/double
+    DATABASE_URL: postgresql://kojfhuyocvuakm:65c836c5e7547a74a38a09da5a13e7dfa078c4559fa3538e683300137f86ac8e@ec2-54-87-179-4.compute-1.amazonaws.com:5432/dd74aeujjhvrsa?schema:public
+run:
+  web: yarn start

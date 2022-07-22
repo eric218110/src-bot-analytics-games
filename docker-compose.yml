@@ -16,7 +16,7 @@ services:
     environment:
       - HEADLESS_BROSWER=true
       - PORT_APP=1995
-      - DATABASE_URL=postgresql://postgres:docker@database:5432/postgres?schema=public
+      - DATABASE_URL=postgresql://kojfhuyocvuakm:65c836c5e7547a74a38a09da5a13e7dfa078c4559fa3538e683300137f86ac8e@ec2-54-87-179-4.compute-1.amazonaws.com:5432/dd74aeujjhvrsa?schema=public
       - ROUTER_APPLICATION_PREFIX=/api/v1/
       - METRICS_PAGE_HOME=https://blaze.com/pt/
       - METRICS_PAGE_CRASH=https://blaze.com/pt/games/crash
@@ -24,7 +24,9 @@ services:
   database:
     image: postgres:alpine
     environment:
-      POSTGRES_PASSWORD: "docker"
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_NAME=${DATABASE_NAME}
     ports:
       - "5432:5432"
     volumes:
