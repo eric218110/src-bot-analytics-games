@@ -1,4 +1,5 @@
 import { Controller } from '@domain/http/controller'
+import { HttpRequest } from '@domain/http/request'
 import { ApiLoginProvider } from '@domain/useCases/api/login/provider'
 
 export class LoginApiController implements Controller {
@@ -6,9 +7,7 @@ export class LoginApiController implements Controller {
 
   public async handler({
     body
-  }: {
-    body: ApiLoginProvider.Props
-  }): Promise<any> {
+  }: HttpRequest<ApiLoginProvider.Props>): Promise<any> {
     return this.apiLoginProvider.onFetchLoginApi(body)
   }
 }

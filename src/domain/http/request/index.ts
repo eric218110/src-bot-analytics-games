@@ -1,4 +1,4 @@
-export type HttpRequest<B> = {
+export type HttpRequest<B = object> = {
   body: B
   params: any
 }
