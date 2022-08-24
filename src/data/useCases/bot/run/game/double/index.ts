@@ -114,8 +114,6 @@ export class GamerRunnerDouble implements RunGameDouble {
       return `${previous}, ${current}`.replace('n, ', '').replace(' ', '')
     }, 'n')
 
-    console.log(lastResultString)
-
     props.strategy.forEach((strategy) => {
       const [colorsStrategy, betIn] = strategy.split(':')
 
