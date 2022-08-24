@@ -6,6 +6,7 @@ import { config } from 'dotenv'
 import cors from 'cors'
 import express from 'express'
 import { makeRunGameDoubleController } from '@main/factories/presentation/controller/run/game/double/load'
+import { makeDestroyGameDoubleController } from '@main/factories/presentation/controller/destroy/game/double'
 
 async function main() {
   config()
@@ -32,6 +33,10 @@ async function main() {
   app.get(`${prefix}bot/start`, adapterRouter(makeBotController()))
   app.post(`${prefix}login`, adapterRouter(makeLoginApiController()))
   app.post(`${prefix}game/double`, adapterRouter(makeRunGameDoubleController()))
+  app.get(
+    `${prefix}game/double/destroy`,
+    adapterRouter(makeDestroyGameDoubleController())
+  )
   app.get(
     `${prefix}analytics/:gameType`,
     adapterRouter(makeMetricsLoadController())

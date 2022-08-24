@@ -17,15 +17,36 @@ export class GamerRunnerDouble implements RunGameDouble {
   constructor(private readonly webDriverBroswer: WebDriverBroswer) {
     const { METRICS_PAGE_DOUBLE: double = '' } = process.env
     this.doubleUrl = double
+    this.webDriverBroswer.onCreateDriver().then((driver) => {
+      this.driver = driver
+      driver.manage().window().maximize()
+    })
+  }
+
+  public async destroy(): Promise<object> {
+    await this.webDriverBroswer.onDestroyDriver()
+    this.driver = undefined as any
+    this.betIsRunning = false
+    this.betLastColor = ''
+    this.lastResult = []
+    this.winOrLose = undefined
+
+    console.log('\nSessão finalizada com sucesso\n')
+
+    return {
+      status: 'destroy'
+    }
   }
 
   public async run(props: RunGameDouble.Props): Promise<void> {
-    this.driver = await this.webDriverBroswer.onCreateDriver()
+    if (!this.driver) {
+      this.driver = await this.webDriverBroswer.onCreateDriver()
+    }
 
     this.showMessagesOnInitGame(props)
     await this.setTokenInStorage(props.login.accessToken)
     this.setValueMoney()
-    // await this.onAnalitcsGame(props)
+    await this.onAnalitcsGame(props)
   }
 
   private async setValueMoney() {
@@ -51,8 +72,8 @@ export class GamerRunnerDouble implements RunGameDouble {
   }
 
   private async setTokenInStorage(accessToken = ''): Promise<void> {
+    this.driver.manage().window().maximize()
     await this.driver.get(this.doubleUrl)
-    await this.driver.manage().window().maximize()
 
     await this.driver.executeScript(
       'window.localStorage.setItem("ACCESS_TOKEN", arguments[0])',
@@ -66,22 +87,24 @@ export class GamerRunnerDouble implements RunGameDouble {
     const keyPageCompleted = 'page complete'
 
     setInterval(async () => {
-      const pageState: any = (await this.driver.executeScript(() => {
-        return document.querySelector('#roulette')?.classList.value ?? ''
-      })) as Array<string>
+      if (this.driver) {
+        const pageState: any = (await this.driver.executeScript(() => {
+          return document.querySelector('#roulette')?.classList.value ?? ''
+        })) as Array<string>
 
-      if (pageState === keyPageCompleted) {
-        const lastItem = await this.driver.executeScript(() => {
-          return document.querySelector(
-            '#roulette-recent > div > div.entries.main > div:nth-child(1) > div > div'
-          )?.classList
-        })
+        if (pageState === keyPageCompleted) {
+          const lastItem = await this.driver.executeScript(() => {
+            return document.querySelector(
+              '#roulette-recent > div > div.entries.main > div:nth-child(1) > div > div'
+            )?.classList
+          })
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_, color] = lastItem as any
-        this.lastResult.push(color)
-        this.avaliableWinOrLose(color)
-        this.avaliateGamePossible(props)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const [_, color] = lastItem as any
+          this.lastResult.push(color)
+          this.avaliableWinOrLose(color)
+          this.avaliateGamePossible(props)
+        }
       }
     }, 5000)
   }
@@ -90,6 +113,8 @@ export class GamerRunnerDouble implements RunGameDouble {
     const lastResultString = this.lastResult.reduce((previous, current) => {
       return `${previous}, ${current}`.replace('n, ', '').replace(' ', '')
     }, 'n')
+
+    console.log(lastResultString)
 
     props.strategy.forEach((strategy) => {
       const [colorsStrategy, betIn] = strategy.split(':')
