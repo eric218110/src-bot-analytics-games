@@ -129,12 +129,12 @@ export class GamerRunnerDouble implements RunGameDouble {
           By.xpath('//*[@id="roulette-controller"]/div[1]/div[3]/button')
         )
 
-        console.log(await element.click())
+        await element.click()
       }
 
       this.betLastColor = betIn
       this.betIsRunning = true
-    }, 5000)
+    }, 6000)
   }
 
   private async avaliableWinOrLose(color: string) {
