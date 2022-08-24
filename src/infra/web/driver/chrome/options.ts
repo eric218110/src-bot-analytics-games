@@ -20,10 +20,13 @@ export const makeOptionsBroswerChorome = () => {
   options.addArguments(['--disable-dev-shm-usage'] as any)
   options.addArguments(['--disable-browser-side-navigation'] as any)
   options.addArguments(['--dns-prefetch-disable'] as any)
-
+  options.addArguments(['--start-maximized'] as any)
+  options.addArguments(['--window-size=1325x744'] as any)
   if (HEADLESS_BROSWER === 'true') {
     options.headless()
   }
+
+  console.log(options)
 
   return options
 }

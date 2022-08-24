@@ -11,6 +11,7 @@ export class GamerRunnerDouble implements RunGameDouble {
     '//*[@id="roulette-controller"]/div[1]/div[2]/div[1]/div/div[1]/input'
   private betIsRunning = false
   private betLastColor = ''
+  private valueMoney: string
   private winOrLose: 'win' | 'lose' | undefined = undefined
 
   constructor(private readonly webDriverBroswer: WebDriverBroswer) {
@@ -19,54 +20,65 @@ export class GamerRunnerDouble implements RunGameDouble {
   }
 
   public async run(props: RunGameDouble.Props): Promise<void> {
-    const driver = await this.webDriverBroswer.onCreateDriver()
-    this.driver = driver
+    this.driver = await this.webDriverBroswer.onCreateDriver()
 
+    this.showMessagesOnInitGame(props)
+    await this.setTokenInStorage(props.login.accessToken)
+    this.setValueMoney()
+    // await this.onAnalitcsGame(props)
+  }
+
+  private async setValueMoney() {
+    const valueMoney = this.driver
+      .findElement(
+        By.xpath(
+          '//*[@id="header"]/div[2]/div/div[2]/div/div[3]/div/a/div/div/div[1]'
+        )
+      )
+      .getText()
+
+    this.valueMoney = await valueMoney
+    console.log(`Saldo atual: ${this.valueMoney}`)
+  }
+
+  private showMessagesOnInitGame(props: RunGameDouble.Props) {
     console.log('Bot Double iniciado')
     console.log('Apostas cadastrada:')
     props.strategy.forEach((strategy) => {
       const [colors, betIn = ''] = strategy.split(':')
       console.log(`Caso ocorra: ${colors} -> aposta em ${betIn}`)
     })
-
-    await this.setTokenInStorage(driver, props.login.accessToken)
-    await this.onAnalitcsGame(driver, props)
   }
 
-  private async setTokenInStorage(
-    driver: WebDriver,
-    accessToken = ''
-  ): Promise<void> {
-    await driver.get(this.doubleUrl)
+  private async setTokenInStorage(accessToken = ''): Promise<void> {
+    await this.driver.get(this.doubleUrl)
+    await this.driver.manage().window().maximize()
 
-    await driver.executeScript(
+    await this.driver.executeScript(
       'window.localStorage.setItem("ACCESS_TOKEN", arguments[0])',
       accessToken
     )
+
+    await this.driver.get(this.doubleUrl)
   }
 
-  private async onAnalitcsGame(
-    driver: any,
-    props: RunGameDouble.Props
-  ): Promise<void> {
-    await driver.get(this.doubleUrl)
-
+  private async onAnalitcsGame(props: RunGameDouble.Props): Promise<void> {
     const keyPageCompleted = 'page complete'
 
     setInterval(async () => {
-      const pageState: any = (await driver.executeScript(() => {
+      const pageState: any = (await this.driver.executeScript(() => {
         return document.querySelector('#roulette')?.classList.value ?? ''
       })) as Array<string>
 
       if (pageState === keyPageCompleted) {
-        const lastItem = await driver.executeScript(() => {
+        const lastItem = await this.driver.executeScript(() => {
           return document.querySelector(
             '#roulette-recent > div > div.entries.main > div:nth-child(1) > div > div'
           )?.classList
         })
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [_, color] = lastItem
+        const [_, color] = lastItem as any
         this.lastResult.push(color)
         this.avaliableWinOrLose(color)
         this.avaliateGamePossible(props)
@@ -143,9 +155,11 @@ export class GamerRunnerDouble implements RunGameDouble {
 
       if (color === this.betLastColor) {
         console.log('Voce ganhou')
+        this.setValueMoney()
         this.winOrLose = 'win'
       } else {
         console.log('Voce perdeu')
+        this.setValueMoney()
         this.winOrLose = 'lose'
       }
 
