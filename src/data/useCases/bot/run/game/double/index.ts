@@ -2,17 +2,17 @@ import { WebDriverBroswer } from '@data/protocols/web/driver'
 import { WebDriver } from '@domain/adapter/web/driver'
 import { RunGameDouble } from '@domain/useCases/bot/run/game/double'
 import { By } from 'selenium-webdriver'
+import { buttonInBetColors, elements } from './contants'
 
 export class GamerRunnerDouble implements RunGameDouble {
   private lastResult: Array<string> = []
   private driver: WebDriver
   private doubleUrl: string
-  private inputBet =
-    '//*[@id="roulette-controller"]/div[1]/div[2]/div[1]/div/div[1]/input'
   private betIsRunning = false
   private betLastColor = ''
   private valueMoney: string
   private winOrLose: 'win' | 'lose' | undefined = undefined
+  private amountLose = 0
 
   constructor(private readonly webDriverBroswer: WebDriverBroswer) {
     const { METRICS_PAGE_DOUBLE: double = '' } = process.env
@@ -50,16 +50,14 @@ export class GamerRunnerDouble implements RunGameDouble {
   }
 
   private async setValueMoney() {
-    const valueMoney = this.driver
-      .findElement(
-        By.xpath(
-          '//*[@id="header"]/div[2]/div/div[2]/div/div[3]/div/a/div/div/div[1]'
-        )
-      )
-      .getText()
+    setTimeout(async () => {
+      const valueMoney = this.driver
+        .findElement(By.xpath(elements.liMoney))
+        .getText()
 
-    this.valueMoney = await valueMoney
-    console.log(`Saldo atual: ${this.valueMoney}`)
+      this.valueMoney = await valueMoney
+      console.log(`Saldo atual: ${this.valueMoney}`)
+    }, 2000)
   }
 
   private showMessagesOnInitGame(props: RunGameDouble.Props) {
@@ -126,50 +124,37 @@ export class GamerRunnerDouble implements RunGameDouble {
   private async betIn(betIn: string, props: RunGameDouble.Props) {
     this.lastResult = []
 
-    console.log(`Realizando aposta em: ${betIn}`)
+    console.log(`\nRealizando aposta em: ${betIn}`)
 
-    await this.driver.findElement(By.xpath(this.inputBet)).clear()
+    await this.driver.findElement(By.xpath(elements.inputValue)).clear()
 
     await this.driver
-      .findElement(By.xpath(this.inputBet))
+      .findElement(By.xpath(elements.inputValue))
       .sendKeys(props.amount)
 
     console.log('Valor da aposta', props.amount)
 
-    if (betIn === 'black') {
-      await this.driver.executeScript(
-        'document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.red").classList.remove("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.white").classList.remove("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.black").classList.add("selected")'
-      )
+    if (betIn === 'black' || betIn === 'red' || betIn === 'white') {
+      await this.driver.executeScript(buttonInBetColors[betIn])
     }
-    if (betIn === 'red') {
-      await this.driver.executeScript(
-        'document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.red").classList.add("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.white").classList.remove("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.black").classList.remove("selected")'
-      )
-    }
-    if (betIn === 'white') {
-      await this.driver.executeScript(
-        'document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.red").classList.remove("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.white").classList.add("selected");\
-        document.querySelector("#roulette-controller > div.body > div.inputs-wrapper > div.input.side > div > div.black").classList.remove("selected")'
-      )
-    }
+
+    const valueMoney = this.valueMoney
 
     setTimeout(async () => {
-      if (props.activeBet === 'true') {
-        const element = await this.driver.findElement(
-          By.xpath('//*[@id="roulette-controller"]/div[1]/div[3]/button')
-        )
+      console.log('Iniciando aposta')
 
-        await element.click()
+      if (props.activeBet === 'true') {
+        await this.driver.executeScript(
+          'document.querySelector("#roulette-controller > div.body > div.place-bet > button").click()'
+        )
       }
 
-      this.betLastColor = betIn
-      this.betIsRunning = true
+      if (valueMoney !== this.valueMoney) {
+        console.log('Aposta efetivada com sucesso')
+      }
     }, 6000)
+    this.betLastColor = betIn
+    this.betIsRunning = true
   }
 
   private async avaliableWinOrLose(color: string) {
@@ -177,16 +162,17 @@ export class GamerRunnerDouble implements RunGameDouble {
       this.betIsRunning = false
 
       if (color === this.betLastColor) {
-        console.log('Voce ganhou')
+        console.log('Voce ganhou\n')
         this.setValueMoney()
         this.winOrLose = 'win'
       } else {
-        console.log('Voce perdeu')
+        console.log('Voce perdeu\n')
         this.setValueMoney()
         this.winOrLose = 'lose'
+        this.amountLose = this.amountLose + 1
       }
 
-      await this.driver.findElement(By.xpath(this.inputBet)).clear()
+      await this.driver.findElement(By.xpath(elements.inputValue)).clear()
     }
   }
 }
